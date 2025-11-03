@@ -54,6 +54,12 @@ local write_to_ipynb = function(event, output_extension)
   local jupytext_filename = utils.get_jupytext_file(ipynb_filename, output_extension)
   jupytext_filename = vim.fn.resolve(vim.fn.expand(jupytext_filename))
 
+  local pre_write = "BufWritePre"
+  if event.event == "FileWriteCmd" then
+    pre_write = "FileWritePre"
+  end
+  vim.api.nvim_exec_autocmds(pre_write, { pattern = jupytext_filename })
+
   vim.cmd.write({ jupytext_filename, bang = true })
   commands.run_jupytext_command(jupytext_filename, {
     ["--update"] = "",
