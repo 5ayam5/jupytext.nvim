@@ -55,10 +55,10 @@ local write_to_ipynb = function(event, output_extension)
   jupytext_filename = vim.fn.resolve(vim.fn.expand(jupytext_filename))
 
   vim.cmd.write({ jupytext_filename, bang = true })
-  commands.run_jupytext_command(vim.fn.shellescape(jupytext_filename), {
+  commands.run_jupytext_command(jupytext_filename, {
     ["--update"] = "",
     ["--to"] = "ipynb",
-    ["--output"] = vim.fn.shellescape(ipynb_filename),
+    ["--output"] = ipynb_filename,
   })
   local buf = vim.api.nvim_get_current_buf()
   vim.api.nvim_set_option_value("modified", false, { buf = buf })
@@ -137,9 +137,9 @@ local read_from_ipynb = function(ipynb_filename)
   local filename_exists = vim.fn.filereadable(ipynb_filename)
 
   if filename_exists and not jupytext_file_exists then
-    commands.run_jupytext_command(vim.fn.shellescape(ipynb_filename), {
+    commands.run_jupytext_command(ipynb_filename, {
       ["--to"] = to_extension_and_style,
-      ["--output"] = vim.fn.shellescape(jupytext_filename),
+      ["--output"] = jupytext_filename,
     })
   end
 
