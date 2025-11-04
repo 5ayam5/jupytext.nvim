@@ -115,6 +115,9 @@ local function check_new_file(filename)
   local file_content = ""
   if vim.fn.filereadable(filename) == 1 then
     file_content = io.open(filename, "r"):read "a"
+    if file_content ~= "" then
+      return nil
+    end
   end
   if M.config.empty_notebook_generator and file_content == "" then
     file_content = M.config.empty_notebook_generator()
@@ -122,15 +125,18 @@ local function check_new_file(filename)
   local file = io.open(filename, "w")
   if not file then
     vim.notify "Failed to create empty Jupyter Notebook"
-    return
+    return false
   end
   -- Write the content to the file
   file:write(file_content)
   file:close()
+  return true
 end
 
 local read_from_ipynb = function(ipynb_filename)
-  check_new_file(ipynb_filename)
+  if check_new_file(ipynb_filename) == false then
+    return
+  end
   local metadata = utils.get_ipynb_metadata(ipynb_filename)
   ipynb_filename = vim.fn.resolve(vim.fn.expand(ipynb_filename))
 
