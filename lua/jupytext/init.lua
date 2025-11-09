@@ -49,9 +49,9 @@ M.config = {
   empty_notebook_generator = empty_notebook,
 }
 
-local write_to_ipynb = function(event, output_extension)
-  local ipynb_filename = event.match
-  local jupytext_filename = utils.get_jupytext_file(ipynb_filename, output_extension)
+local write_to_ipynb = function(event)
+  local jupytext_filename = event.match
+  local ipynb_filename = utils.get_ipynb_file(jupytext_filename)
   jupytext_filename = vim.fn.resolve(vim.fn.expand(jupytext_filename))
 
   local pre_write = "BufWritePre"
@@ -100,12 +100,7 @@ local style_and_extension = function(metadata)
   return custom_formatting, output_extension, to_extension_and_style
 end
 
-local cleanup = function(ipynb_filename, delete)
-  local metadata = utils.get_ipynb_metadata(ipynb_filename)
-
-  local _, output_extension, _ = style_and_extension(metadata)
-
-  local jupytext_filename = utils.get_jupytext_file(ipynb_filename, output_extension)
+local cleanup = function(jupytext_filename, delete)
   if delete then
     vim.fn.delete(vim.fn.resolve(vim.fn.expand(jupytext_filename)))
   end
@@ -165,6 +160,8 @@ local read_from_ipynb = function(ipynb_filename)
 
     -- Replace the buffer content with the jupytext content
     vim.api.nvim_buf_set_lines(0, 0, -1, false, jupytext_content)
+
+    vim.api.nvim_buf_set_name(0, jupytext_filename)
   else
     error "Couldn't find jupytext file."
     return

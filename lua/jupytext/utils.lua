@@ -28,6 +28,11 @@ M.get_jupytext_file = function(filename, extension)
   return fileroot .. "." .. extension
 end
 
+M.get_ipynb_file = function(filename)
+  local fileroot = vim.fn.fnamemodify(filename, ":r")
+  return fileroot .. ".ipynb"
+end
+
 M.check_key = function(tbl, key)
   for tbl_key, _ in pairs(tbl) do
     if tbl_key == key then
