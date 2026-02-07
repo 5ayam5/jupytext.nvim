@@ -158,6 +158,10 @@ local read_from_ipynb = function(ipynb_filename)
     -- doesn't delete the first line of the actual input
     table.insert(jupytext_content, 1, "")
 
+    -- hack to make sure the ipynb file gets added to the oldfiles list
+    pcall(vim.api.nvim_command, "normal! m'")
+    pcall(vim.api.nvim_command, "wshada")
+
     -- Replace the buffer content with the jupytext content
     vim.api.nvim_buf_set_lines(0, 0, -1, false, jupytext_content)
 
@@ -182,7 +186,7 @@ local read_from_ipynb = function(ipynb_filename)
     pattern = "<buffer>",
     group = "jupytext-nvim",
     callback = function(ev)
-      write_to_ipynb(ev, output_extension)
+      write_to_ipynb(ev)
     end,
   })
 
