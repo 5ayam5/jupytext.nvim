@@ -153,6 +153,7 @@ local read_from_ipynb = function(ipynb_filename)
       if ipynb_bufnr ~= -1 then
         vim.api.nvim_buf_delete(ipynb_bufnr, { force = true })
       end
+      vim.api.nvim_exec_autocmds("BufRead", { pattern = jupytext_filename })
       return
     end
   end
@@ -180,6 +181,7 @@ local read_from_ipynb = function(ipynb_filename)
     vim.api.nvim_buf_set_lines(0, 0, -1, false, jupytext_content)
 
     vim.api.nvim_buf_set_name(0, jupytext_filename)
+    vim.api.nvim_exec_autocmds("BufRead", { pattern = jupytext_filename })
   else
     error "Couldn't find jupytext file."
     return
