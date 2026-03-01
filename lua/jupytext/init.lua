@@ -143,6 +143,20 @@ local read_from_ipynb = function(ipynb_filename)
   -- filename is the notebook
   local filename_exists = vim.fn.filereadable(ipynb_filename)
 
+  -- check if jupytext file is already open in a buffer
+  if jupytext_file_exists then
+    local jupytext_bufnr = vim.fn.bufnr(jupytext_filename)
+    if jupytext_bufnr ~= -1 then
+      vim.api.nvim_set_current_buf(jupytext_bufnr)
+      -- close the ipynb buffer if it is open
+      local ipynb_bufnr = vim.fn.bufnr(ipynb_filename)
+      if ipynb_bufnr ~= -1 then
+        vim.api.nvim_buf_delete(ipynb_bufnr, { force = true })
+      end
+      return
+    end
+  end
+
   if filename_exists and not jupytext_file_exists then
     commands.run_jupytext_command(ipynb_filename, {
       ["--to"] = to_extension_and_style,
