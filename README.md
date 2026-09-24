@@ -41,6 +41,7 @@ representation you want jupytext to output. The default configuration is:
   force_ft = nil,  -- Default filetype. Don't change unless you know what you are doing
   custom_language_formatting = {},
   empty_notebook_generator = empty_notebook, -- Where empty_notebook is a function that returns the json representation of an empty notebook.
+  metadata_language_fields = nil, -- Extra metadata key-paths to look up the language, tried last (e.g. { { "application/vnd.databricks.v1+notebook", "language" } }).
 }
 ```
 
